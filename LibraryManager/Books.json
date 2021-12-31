@@ -1,0 +1,24 @@
+[
+    {
+        "bookID": 0,
+        "Name": "The Fellowship of the Ring",
+        "Author": "J. R. R. Tolkien",
+        "Category": "Fantasy",
+        "Language": "English",
+        "PublicationDate": "1991",
+        "ISBN": "0-3452-4827-9",
+        "UserID": null,
+        "DueDate": null
+    },
+    {
+        "bookID": 1,
+        "Name": "A Game of Thrones",
+        "Author": "George R. R. Martin",
+        "Category": "Fantasy",
+        "Language": "English",
+        "PublicationDate": "1996",
+        "ISBN": "0-553-103547",
+        "UserID": 123,
+        "DueDate": "2021-12-25"
+    }
+]
