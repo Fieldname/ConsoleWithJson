@@ -13,12 +13,12 @@ namespace LibraryManager
 {
     class Book
     {
-        private static int CheckOutTimeLimitInMonths = 2;
-        private static int CheckOutBookLimit = 3;
-        private static string directoryIN = Directory.GetCurrentDirectory() + $"{Path.DirectorySeparatorChar}Books.json";
-        private static string directoryOUT = Directory.GetCurrentDirectory() + $"{Path.DirectorySeparatorChar}Books.json";
+        private static readonly int CheckOutTimeLimitInMonths = 2;
+        private static readonly int CheckOutBookLimit = 3;
+        private static readonly string directoryIN = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{Path.DirectorySeparatorChar}Books.json";
+        private static readonly string directoryOUT = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{Path.DirectorySeparatorChar}Books.json";
         private static List<Book> JsonBookList = new List<Book>();
-        public int bookID { get; set; }
+        public int BookID { get; set; }
         public string Name { get; set; }
         public string Author { get; set; }
         public string Category { get; set; }
@@ -35,7 +35,7 @@ namespace LibraryManager
             var _bookID = 0;
             if (File.Exists(directoryIN))
             {
-                _bookID = JsonBookList.LastOrDefault().bookID;
+                _bookID = JsonBookList.LastOrDefault().BookID;
                 _bookID++;
             }
             Console.WriteLine("Please enter the name: ");
@@ -52,7 +52,7 @@ namespace LibraryManager
             var _ISBN = Console.ReadLine();
             JsonBookList.Add(new Book
             {
-                bookID = _bookID,
+                BookID = _bookID,
                 Name = name,
                 Author = author,
                 Category = category,
@@ -136,8 +136,8 @@ namespace LibraryManager
             {
                 if (book.UserID == _userID)
                 {
-                    userBookID.Add(book.bookID);
-                    Console.WriteLine("Book ID: " + book.bookID);
+                    userBookID.Add(book.BookID);
+                    Console.WriteLine("Book ID: " + book.BookID);
                     Console.WriteLine("Name: " + book.Name);
                     Console.WriteLine("Due date: " + book.DueDate);
                 }
@@ -170,18 +170,25 @@ namespace LibraryManager
         }
         public static void ListAllBooks()
         {
-
-            foreach (var book in JsonBookList)
+            Console.WriteLine("Please select a filter (1-6): ");
+            Console.WriteLine("1. Author");
+            Console.WriteLine("2. Category");
+            Console.WriteLine("3. Language");
+            Console.WriteLine("4. ISBN");
+            Console.WriteLine("5. Name");
+            Console.WriteLine("6. Status");
+            int selection;
+            string filterData = "";
+            if (Int32.TryParse(Console.ReadLine(), out selection) && selection <= 6 && selection > 0)
             {
-                    Console.Write("ID: " + book.bookID + " | ");
-                    Console.Write("Name: " + book.Name + " | ");
-                    Console.Write("Author: " + book.Author + " | ");
-                    Console.Write("Category: " + book.Category + " | ");
-                    Console.Write("Language: " + book.Language + " | ");
-                    Console.Write("Publication date: " + book.PublicationDate + " | ");
-                    Console.Write("ISBN: " + book.ISBN + " | ");
-                    Console.WriteLine(book.UserID == null ? "Available" : "Taken");
+                Console.WriteLine("Please enter filter data: ");
+                filterData = Console.ReadLine();
             }
+            else
+            {
+                Console.WriteLine("Not a valid selection, please try again...");
+            }
+            BookFilter(filterData, selection);
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }
@@ -213,6 +220,28 @@ namespace LibraryManager
         {
             string JsonBookListString = JsonConvert.SerializeObject(JsonBookList);
             File.WriteAllText(directoryOUT, JsonBookListString);
+        }
+        public static void BookFilter(string filterData, int selection)
+        {
+            foreach (var book in JsonBookList)
+            {
+                if (selection == 1 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.Author) ||
+                   selection == 2 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.Category) ||
+                   selection == 3 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.Language) ||
+                   selection == 4 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.ISBN) ||
+                   selection == 5 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.Name) ||
+                   selection == 6 && FileSystemName.MatchesSimpleExpression($"*{filterData}*", book.UserID == null ? "Available" : "Taken"))
+                {
+                    Console.Write("ID: " + book.BookID + " | ");
+                    Console.Write("Name: " + book.Name + " | ");
+                    Console.Write("Author: " + book.Author + " | ");
+                    Console.Write("Category: " + book.Category + " | ");
+                    Console.Write("Language: " + book.Language + " | ");
+                    Console.Write("Publication date: " + book.PublicationDate + " | ");
+                    Console.Write("ISBN: " + book.ISBN + " | ");
+                    Console.WriteLine(book.UserID == null ? "Available" : "Taken");
+                }
+            }
         }
     }
 }
