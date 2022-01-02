@@ -1,13 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.IO.Enumeration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
+using System.Linq;
 
 namespace LibraryManager
 {
@@ -15,8 +11,8 @@ namespace LibraryManager
     {
         private static readonly int CheckOutTimeLimitInMonths = 2;
         private static readonly int CheckOutBookLimit = 3;
-        private static readonly string directoryIN = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{Path.DirectorySeparatorChar}Books.json";
-        private static readonly string directoryOUT = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{Path.DirectorySeparatorChar}Books.json";
+        private static readonly string directoryIN = Directory.GetCurrentDirectory().Split(new string[] { $"{Path.DirectorySeparatorChar}bin" }, StringSplitOptions.None)[0] + $"{Path.DirectorySeparatorChar}Books.json";
+        private static readonly string directoryOUT = Directory.GetCurrentDirectory().Split(new string[] { $"{Path.DirectorySeparatorChar}bin" }, StringSplitOptions.None)[0] + $"{Path.DirectorySeparatorChar}Books.json";
         private static List<Book> JsonBookList = new List<Book>();
         public int BookID { get; set; }
         public string Name { get; set; }
